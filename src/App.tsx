@@ -3,12 +3,14 @@ import type { Difficulty, Player, TournamentConfig } from './types/game';
 import { useGameState } from './hooks/useGameState';
 import { useTimer } from './hooks/useTimer';
 import { getBestScore, saveBestScore, saveSession, loadSession, clearSession } from './utils/storage';
+import { playFlip, playMatch, playMismatch, playWin, playStart, playClick, startBGM, stopBGM, startMenuMusic, stopMenuMusic } from './utils/sounds';
 import { getGridConfig } from './utils/cards';
 import { Board } from './components/Board/Board';
 import { Controls } from './components/Controls/Controls';
 import { PlayerBar } from './components/PlayerBar/PlayerBar';
 import { PlayerSetup } from './components/PlayerSetup/PlayerSetup';
 import { WinModal } from './components/WinModal/WinModal';
+import { Confetti } from './components/Confetti/Confetti';
 import styles from './App.module.scss';
 
 type Screen = 'setup' | 'game';
@@ -30,6 +32,8 @@ export default function App() {
   const [currentRound, setCurrentRound] = useState(1);
   const [roundWins, setRoundWins] = useState<number[]>([]);
   const [savedPlayers, setSavedPlayers] = useState<Player[]>([]);
+
+  const [musicOn, setMusicOn] = useState(true);
 
   const isSeries = isMultiplayer && tournament.mode === 'series';
   const winsNeeded = Math.ceil(tournament.bestOf / 2);
@@ -78,6 +82,26 @@ export default function App() {
     });
   }, [state, tournament, currentRound, roundWins, savedPlayers, time, screen, status, moves]);
 
+  // Music control - menu music on setup, game BGM when playing
+  useEffect(() => {
+    if (!musicOn) {
+      stopMenuMusic();
+      stopBGM();
+      return;
+    }
+
+    if (screen === 'setup') {
+      stopBGM();
+      startMenuMusic();
+    } else if (screen === 'game' && isPlaying) {
+      stopMenuMusic();
+      startBGM();
+    } else {
+      stopMenuMusic();
+      stopBGM();
+    }
+  }, [screen, isPlaying, musicOn]);
+
   // Match check
   useEffect(() => {
     if (flippedIds.length !== 2) return;
@@ -88,9 +112,11 @@ export default function App() {
     const isMatch = card1!.pairId === card2!.pairId;
 
     if (isMatch) {
+      playMatch();
       resolveMatch(true);
     } else {
       matchTimeoutRef.current = setTimeout(() => {
+        playMismatch();
         resolveMatch(false);
       }, 800);
     }
@@ -103,6 +129,7 @@ export default function App() {
   // Handle win — record round result
   useEffect(() => {
     if (status !== 'won') return;
+    playWin();
 
     if (!isMultiplayer) {
       const newBest = saveBestScore({ moves, time, difficulty });
@@ -139,6 +166,7 @@ export default function App() {
       setBestScore(getBestScore(newDifficulty));
       setScreen('game');
       hasRestoredRef.current = true;
+      playStart();
     },
     [reset, resetTimer]
   );
@@ -157,6 +185,7 @@ export default function App() {
     reset(undefined, savedPlayers);
     resetTimer();
     setIsNewBest(false);
+    playClick();
   }, [reset, resetTimer, savedPlayers, isSeries]);
 
   const handleChangeDifficulty = useCallback(
@@ -191,11 +220,20 @@ export default function App() {
           <h1 className={styles.title}>Memory Match</h1>
           <p className={styles.subtitle}>Find all the matching pairs</p>
         </div>
-        {screen === 'game' && (
-          <button className={styles.settingsBtn} onClick={handleNewGame} title="Settings">
-            ⚙️
+        <div className={styles.headerActions}>
+          <button
+            className={styles.musicBtn}
+            onClick={() => setMusicOn((m) => !m)}
+            title={musicOn ? 'Mute music' : 'Play music'}
+          >
+            {musicOn ? '🔊' : '🔇'}
           </button>
-        )}
+          {screen === 'game' && (
+            <button className={styles.settingsBtn} onClick={handleNewGame} title="Settings">
+              ⚙️
+            </button>
+          )}
+        </div>
       </header>
 
       {screen === 'setup' ? (
@@ -229,7 +267,7 @@ export default function App() {
             disabled={flippedIds.length >= 2}
             isMultiplayer={isMultiplayer}
             currentPlayerIndex={currentPlayerIndex}
-            onFlip={flipCard}
+            onFlip={(id) => { playFlip(); flipCard(id); }}
           />
 
           <div className={styles.sr} aria-live="polite">
@@ -245,6 +283,8 @@ export default function App() {
       <footer className={styles.footer}>
         Made by Whilo
       </footer>
+
+      {status === 'won' && screen === 'game' && <Confetti />}
 
       {status === 'won' && screen === 'game' && (
         <WinModal

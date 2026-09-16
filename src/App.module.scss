@@ -14,9 +14,7 @@
 }
 
 .header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  position: relative;
   text-align: center;
   width: 100%;
   margin-bottom: 24px;
@@ -24,6 +22,15 @@
   @include mobile {
     margin-bottom: 16px;
   }
+}
+
+.headerActions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .brand {
@@ -69,10 +76,21 @@
   letter-spacing: 0.05em;
 }
 
+.musicBtn {
+  @include button-reset;
+  font-size: 1.3rem;
+  opacity: 0.5;
+  transition: all $transition-fast;
+  line-height: 1;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
 .settingsBtn {
   @include button-reset;
-  margin-left: auto;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   opacity: 0.5;
   transition: all $transition-fast;
   line-height: 1;

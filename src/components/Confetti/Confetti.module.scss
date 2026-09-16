@@ -1,0 +1,26 @@
+.confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 200;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  top: -10px;
+  border-radius: 2px;
+  animation: fall linear forwards;
+  opacity: 0;
+
+  @keyframes fall {
+    0% {
+      transform: translateY(0) translateX(0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh) translateX(var(--drift)) rotate(720deg);
+      opacity: 0;
+    }
+  }
+}
