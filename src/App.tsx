@@ -82,6 +82,20 @@ export default function App() {
     });
   }, [state, tournament, currentRound, roundWins, savedPlayers, time, screen, status, moves]);
 
+  // Auto-start music on first user interaction (browser requires it)
+  useEffect(() => {
+    const handleFirstInteraction = () => {
+      if (musicOn) {
+        if (screen === 'setup') startMenuMusic();
+        else if (screen === 'game' && isPlaying) startBGM();
+      }
+      document.removeEventListener('click', handleFirstInteraction);
+    };
+    document.addEventListener('click', handleFirstInteraction);
+    return () => document.removeEventListener('click', handleFirstInteraction);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Music control - menu music on setup, game BGM when playing
   useEffect(() => {
     if (!musicOn) {

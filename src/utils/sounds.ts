@@ -83,31 +83,30 @@ export function playStart() {
   playTone(659, 0.15, 'sine', 0.12, 0.16);
 }
 
-// Background music - looping intense beat
+// Background music - cinematic focus theme
 export function startBGM() {
   if (bgmPlaying) return;
   bgmPlaying = true;
 
   const ctx = getCtx();
   const master = ctx.createGain();
-  master.gain.value = 0.06;
+  master.gain.value = 0.045;
   master.connect(ctx.destination);
 
   const oscs: OscillatorNode[] = [];
   const gains: GainNode[] = [];
 
-  // Deep bass pulse
+  // Deep warm bass - slow pulse
   const bassOsc = ctx.createOscillator();
   const bassGain = ctx.createGain();
   bassOsc.type = 'sine';
-  bassOsc.frequency.value = 55; // A1
-  bassGain.gain.value = 0.8;
-  // LFO for pulsing effect
+  bassOsc.frequency.value = 65.41; // C2
+  bassGain.gain.value = 0.6;
   const bassLfo = ctx.createOscillator();
   const bassLfoGain = ctx.createGain();
   bassLfo.type = 'sine';
-  bassLfo.frequency.value = 2; // pulse speed
-  bassLfoGain.gain.value = 0.4;
+  bassLfo.frequency.value = 0.5; // slow gentle pulse
+  bassLfoGain.gain.value = 0.3;
   bassLfo.connect(bassLfoGain);
   bassLfoGain.connect(bassGain.gain);
   bassLfo.start();
@@ -117,64 +116,83 @@ export function startBGM() {
   oscs.push(bassOsc, bassLfo);
   gains.push(bassGain, bassLfoGain);
 
-  // Mid tension drone - minor chord
-  const droneNotes = [130.81, 155.56, 196]; // C3, Eb3, G3 (Cm)
-  droneNotes.forEach((freq) => {
+  // Ambient pad - Am7 chord (warm, mysterious)
+  const padNotes = [220, 261.63, 329.63, 392]; // A3, C4, E4, G4
+  padNotes.forEach((freq) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    osc.type = 'triangle';
+    osc.type = 'sine';
     osc.frequency.value = freq;
-    gain.gain.value = 0.15;
+    gain.gain.value = 0.12;
+    // Gentle vibrato
+    const vib = ctx.createOscillator();
+    const vibGain = ctx.createGain();
+    vib.type = 'sine';
+    vib.frequency.value = 3 + Math.random() * 2;
+    vibGain.gain.value = 1.5;
+    vib.connect(vibGain);
+    vibGain.connect(osc.frequency);
+    vib.start();
     osc.connect(gain);
     gain.connect(master);
     osc.start();
-    oscs.push(osc);
-    gains.push(gain);
+    oscs.push(osc, vib);
+    gains.push(gain, vibGain);
   });
 
-  // High shimmer arpeggio
+  // Melodic arpeggio - cycling through pentatonic scale
+  const arpNotes = [523, 587, 659, 784, 880, 784, 659, 587]; // C5 pentatonic
+  let arpIndex = 0;
   const arpOsc = ctx.createOscillator();
   const arpGain = ctx.createGain();
   arpOsc.type = 'sine';
-  arpOsc.frequency.value = 523; // C5
-  arpGain.gain.value = 0.08;
-  // Slow frequency sweep for movement
-  const arpLfo = ctx.createOscillator();
-  const arpLfoGain = ctx.createGain();
-  arpLfo.type = 'sine';
-  arpLfo.frequency.value = 0.3;
-  arpLfoGain.gain.value = 80;
-  arpLfo.connect(arpLfoGain);
-  arpLfoGain.connect(arpOsc.frequency);
-  arpLfo.start();
+  arpOsc.frequency.value = arpNotes[0];
+  arpGain.gain.value = 0;
   arpOsc.connect(arpGain);
   arpGain.connect(master);
   arpOsc.start();
-  oscs.push(arpOsc, arpLfo);
-  gains.push(arpGain, arpLfoGain);
+  oscs.push(arpOsc);
+  gains.push(arpGain);
 
-  // Ticking rhythm
-  const tickOsc = ctx.createOscillator();
-  const tickGain = ctx.createGain();
-  tickOsc.type = 'square';
-  tickOsc.frequency.value = 1200;
-  tickGain.gain.value = 0;
-  tickOsc.connect(tickGain);
-  tickGain.connect(master);
-  tickOsc.start();
-  oscs.push(tickOsc);
-  gains.push(tickGain);
-
-  // Schedule ticking pattern
-  const tickInterval = setInterval(() => {
-    if (!bgmPlaying) {
-      clearInterval(tickInterval);
-      return;
-    }
+  const arpInterval = setInterval(() => {
+    if (!bgmPlaying) { clearInterval(arpInterval); return; }
     const now = ctx.currentTime;
-    tickGain.gain.setValueAtTime(0.12, now);
-    tickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-  }, 500);
+    arpIndex = (arpIndex + 1) % arpNotes.length;
+    arpOsc.frequency.setValueAtTime(arpNotes[arpIndex], now);
+    arpGain.gain.setValueAtTime(0.18, now);
+    arpGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+  }, 600);
+
+  // Soft heartbeat rhythm
+  const kickOsc = ctx.createOscillator();
+  const kickGain = ctx.createGain();
+  kickOsc.type = 'sine';
+  kickOsc.frequency.value = 80;
+  kickGain.gain.value = 0;
+  kickOsc.connect(kickGain);
+  kickGain.connect(master);
+  kickOsc.start();
+  oscs.push(kickOsc);
+  gains.push(kickGain);
+
+  let beatPhase = 0;
+  const beatInterval = setInterval(() => {
+    if (!bgmPlaying) { clearInterval(beatInterval); return; }
+    const now = ctx.currentTime;
+    // Double beat like heartbeat: thump-thump ... thump-thump
+    kickGain.gain.setValueAtTime(0.5, now);
+    kickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+    if (beatPhase % 2 === 0) {
+      // Second beat slightly softer and delayed
+      setTimeout(() => {
+        if (!bgmPlaying) return;
+        const t = ctx.currentTime;
+        kickGain.gain.setValueAtTime(0.3, t);
+        kickGain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+      }, 200);
+    }
+    beatPhase++;
+  }, 800);
 
   bgmNodes = { oscs, gains, master };
 }
