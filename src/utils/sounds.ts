@@ -83,116 +83,91 @@ export function playStart() {
   playTone(659, 0.15, 'sine', 0.12, 0.16);
 }
 
-// Background music - cinematic focus theme
+// Background music - chill lofi vibes
 export function startBGM() {
   if (bgmPlaying) return;
   bgmPlaying = true;
 
   const ctx = getCtx();
   const master = ctx.createGain();
-  master.gain.value = 0.045;
+  master.gain.value = 0.04;
   master.connect(ctx.destination);
 
   const oscs: OscillatorNode[] = [];
   const gains: GainNode[] = [];
 
-  // Deep warm bass - slow pulse
+  // Warm sub bass
   const bassOsc = ctx.createOscillator();
   const bassGain = ctx.createGain();
   bassOsc.type = 'sine';
-  bassOsc.frequency.value = 65.41; // C2
-  bassGain.gain.value = 0.6;
-  const bassLfo = ctx.createOscillator();
-  const bassLfoGain = ctx.createGain();
-  bassLfo.type = 'sine';
-  bassLfo.frequency.value = 0.5; // slow gentle pulse
-  bassLfoGain.gain.value = 0.3;
-  bassLfo.connect(bassLfoGain);
-  bassLfoGain.connect(bassGain.gain);
-  bassLfo.start();
+  bassOsc.frequency.value = 55; // A1
+  bassGain.gain.value = 0.35;
   bassOsc.connect(bassGain);
   bassGain.connect(master);
   bassOsc.start();
-  oscs.push(bassOsc, bassLfo);
-  gains.push(bassGain, bassLfoGain);
+  oscs.push(bassOsc);
+  gains.push(bassGain);
 
-  // Ambient pad - Am7 chord (warm, mysterious)
-  const padNotes = [220, 261.63, 329.63, 392]; // A3, C4, E4, G4
+  // Dreamy pad - Fmaj9 (warm, floaty)
+  const padNotes = [174.61, 220, 261.63, 329.63, 392]; // F3, A3, C4, E4, G4
   padNotes.forEach((freq) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
     osc.frequency.value = freq;
-    gain.gain.value = 0.12;
-    // Gentle vibrato
-    const vib = ctx.createOscillator();
-    const vibGain = ctx.createGain();
-    vib.type = 'sine';
-    vib.frequency.value = 3 + Math.random() * 2;
-    vibGain.gain.value = 1.5;
-    vib.connect(vibGain);
-    vibGain.connect(osc.frequency);
-    vib.start();
+    gain.gain.value = 0.08;
     osc.connect(gain);
     gain.connect(master);
     osc.start();
-    oscs.push(osc, vib);
-    gains.push(gain, vibGain);
+    oscs.push(osc);
+    gains.push(gain);
   });
 
-  // Melodic arpeggio - cycling through pentatonic scale
-  const arpNotes = [523, 587, 659, 784, 880, 784, 659, 587]; // C5 pentatonic
-  let arpIndex = 0;
-  const arpOsc = ctx.createOscillator();
-  const arpGain = ctx.createGain();
-  arpOsc.type = 'sine';
-  arpOsc.frequency.value = arpNotes[0];
-  arpGain.gain.value = 0;
-  arpOsc.connect(arpGain);
-  arpGain.connect(master);
-  arpOsc.start();
-  oscs.push(arpOsc);
-  gains.push(arpGain);
+  // Slow lofi melody - pentatonic, relaxed timing
+  const melodyNotes = [
+    659, 587, 523, 440, 523, 587, 440, 392,
+    523, 659, 587, 523, 440, 392, 440, 523
+  ];
+  let melodyIndex = 0;
+  const melodyOsc = ctx.createOscillator();
+  const melodyGain = ctx.createGain();
+  melodyOsc.type = 'triangle';
+  melodyOsc.frequency.value = melodyNotes[0];
+  melodyGain.gain.value = 0;
+  melodyOsc.connect(melodyGain);
+  melodyGain.connect(master);
+  melodyOsc.start();
+  oscs.push(melodyOsc);
+  gains.push(melodyGain);
 
-  const arpInterval = setInterval(() => {
-    if (!bgmPlaying) { clearInterval(arpInterval); return; }
+  const melodyInterval = setInterval(() => {
+    if (!bgmPlaying) { clearInterval(melodyInterval); return; }
     const now = ctx.currentTime;
-    arpIndex = (arpIndex + 1) % arpNotes.length;
-    arpOsc.frequency.setValueAtTime(arpNotes[arpIndex], now);
-    arpGain.gain.setValueAtTime(0.18, now);
-    arpGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-  }, 600);
+    melodyIndex = (melodyIndex + 1) % melodyNotes.length;
+    melodyOsc.frequency.setValueAtTime(melodyNotes[melodyIndex], now);
+    melodyGain.gain.setValueAtTime(0.2, now);
+    melodyGain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+  }, 1000);
 
-  // Soft heartbeat rhythm
-  const kickOsc = ctx.createOscillator();
-  const kickGain = ctx.createGain();
-  kickOsc.type = 'sine';
-  kickOsc.frequency.value = 80;
-  kickGain.gain.value = 0;
-  kickOsc.connect(kickGain);
-  kickGain.connect(master);
-  kickOsc.start();
-  oscs.push(kickOsc);
-  gains.push(kickGain);
-
-  let beatPhase = 0;
-  const beatInterval = setInterval(() => {
-    if (!bgmPlaying) { clearInterval(beatInterval); return; }
-    const now = ctx.currentTime;
-    // Double beat like heartbeat: thump-thump ... thump-thump
-    kickGain.gain.setValueAtTime(0.5, now);
-    kickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-    if (beatPhase % 2 === 0) {
-      // Second beat slightly softer and delayed
-      setTimeout(() => {
-        if (!bgmPlaying) return;
-        const t = ctx.currentTime;
-        kickGain.gain.setValueAtTime(0.3, t);
-        kickGain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-      }, 200);
-    }
-    beatPhase++;
-  }, 800);
+  // Gentle high shimmer - slow breathing
+  const shimOsc = ctx.createOscillator();
+  const shimGain = ctx.createGain();
+  shimOsc.type = 'sine';
+  shimOsc.frequency.value = 1047; // C6
+  shimGain.gain.value = 0.03;
+  const shimLfo = ctx.createOscillator();
+  const shimLfoGain = ctx.createGain();
+  shimLfo.type = 'sine';
+  shimLfo.frequency.value = 0.1; // very slow
+  shimLfoGain.gain.value = 0.02;
+  shimLfo.connect(shimLfoGain);
+  shimLfoGain.connect(shimGain.gain);
+  shimLfo.start();
+  shimOsc.connect(shimGain);
+  shimGain.connect(master);
+  shimOsc.start();
+  oscs.push(shimOsc, shimLfo);
+  gains.push(shimGain, shimLfoGain);
 
   bgmNodes = { oscs, gains, master };
 }

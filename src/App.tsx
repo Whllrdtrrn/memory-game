@@ -13,10 +13,10 @@ import { WinModal } from './components/WinModal/WinModal';
 import { Confetti } from './components/Confetti/Confetti';
 import styles from './App.module.scss';
 
-type Screen = 'setup' | 'game';
+type Screen = 'splash' | 'setup' | 'game';
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('setup');
+  const [screen, setScreen] = useState<Screen>('splash');
   const { state, flipCard, resolveMatch, reset, restore } = useGameState('4x4');
   const { cards, flippedIds, moves, difficulty, status, players, currentPlayerIndex } = state;
 
@@ -82,18 +82,9 @@ export default function App() {
     });
   }, [state, tournament, currentRound, roundWins, savedPlayers, time, screen, status, moves]);
 
-  // Auto-start music on first user interaction (browser requires it)
-  useEffect(() => {
-    const handleFirstInteraction = () => {
-      if (musicOn) {
-        if (screen === 'setup') startMenuMusic();
-        else if (screen === 'game' && isPlaying) startBGM();
-      }
-      document.removeEventListener('click', handleFirstInteraction);
-    };
-    document.addEventListener('click', handleFirstInteraction);
-    return () => document.removeEventListener('click', handleFirstInteraction);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleEnter = useCallback(() => {
+    setScreen('setup');
+    startMenuMusic();
   }, []);
 
   // Music control - menu music on setup, game BGM when playing
@@ -225,6 +216,19 @@ export default function App() {
     setCurrentRound(1);
     setRoundWins([]);
   }, [reset, resetTimer]);
+
+  if (screen === 'splash') {
+    return (
+      <div className={styles.app}>
+        <div className={styles.splash} onClick={handleEnter}>
+          <p className={styles.brand}>Whilo</p>
+          <h1 className={styles.title}>Memory Match</h1>
+          <p className={styles.subtitle}>Find all the matching pairs</p>
+          <button className={styles.enterBtn}>Tap to Start</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.app}>
