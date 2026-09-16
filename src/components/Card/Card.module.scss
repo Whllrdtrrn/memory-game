@@ -1,0 +1,120 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.card {
+  position: relative;
+  aspect-ratio: 1;
+  perspective: 800px;
+  border-radius: $border-radius;
+}
+
+.clickArea {
+  @include button-reset;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: $border-radius;
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid $color-primary-light;
+    outline-offset: 3px;
+    border-radius: $border-radius;
+  }
+}
+
+.inner {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform $flip-duration cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: $border-radius;
+}
+
+.flipped .inner {
+  transform: rotateY(180deg);
+}
+
+.front,
+.back {
+  @include flex-center;
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: $border-radius;
+  font-size: clamp(1.5rem, 4vw, 2.8rem);
+  user-select: none;
+}
+
+.front {
+  background: $color-card-front;
+  border: 2px solid $color-border-light;
+  transform: rotateY(180deg);
+  box-shadow: $shadow-card;
+}
+
+.back {
+  background: linear-gradient(145deg, $color-card-back-1, $color-card-back-2);
+  border: 2px solid rgba(white, 0.08);
+  box-shadow: $shadow-card;
+  transition: box-shadow $transition-fast, border-color $transition-fast, transform $transition-fast;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 2px solid rgba(white, 0.06);
+    border-radius: calc($border-radius - 6px);
+  }
+
+  &::after {
+    content: '?';
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 800;
+    color: rgba(white, 0.2);
+  }
+}
+
+.card:hover .back {
+  box-shadow: $shadow-card-hover;
+  border-color: rgba($color-primary-light, 0.3);
+  transform: scale(1.03);
+}
+
+.flipped .front,
+.matched .front {
+  animation: popIn 0.3s ease 0.2s both;
+}
+
+// Player color styling for flipped & matched cards
+.hasPlayerColor.flipped .front {
+  border-color: var(--player-color);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.15);
+}
+
+.hasPlayerColor.matched .front {
+  border-color: var(--player-color);
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--player-color) 25%, transparent);
+}
+
+// Default matched style (solo mode, no player color)
+.matched:not(.hasPlayerColor) .front {
+  background: $color-card-matched;
+  border-color: $color-success-dark;
+  box-shadow: 0 0 12px rgba($color-success, 0.15);
+}
+
+.matched .clickArea {
+  cursor: default;
+}
+
+@keyframes popIn {
+  from {
+    scale: 0.8;
+  }
+  to {
+    scale: 1;
+  }
+}

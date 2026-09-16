@@ -1,0 +1,261 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.setup {
+  @include flex-center;
+  width: 100%;
+  flex: 1;
+  padding: 20px;
+}
+
+.card {
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-lg;
+  padding: 32px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: $shadow-surface, $shadow-glow;
+
+  @include mobile {
+    padding: 24px 20px;
+  }
+}
+
+.heading {
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 28px;
+  background: linear-gradient(135deg, $color-primary-light, $color-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.sectionLabel {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $color-text-muted;
+  margin-bottom: 10px;
+}
+
+.playerToggle {
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: $border-radius-sm;
+  padding: 4px;
+}
+
+.toggleBtn {
+  @include button-reset;
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $color-text-muted;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $color-text;
+    background: $color-surface-hover;
+  }
+}
+
+.active {
+  background: $color-primary;
+  color: white;
+  box-shadow: 0 2px 8px rgba($color-primary, 0.3);
+
+  &:hover {
+    background: $color-primary-light;
+    color: white;
+  }
+}
+
+.nameInputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.playerDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nameInput {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid $color-border;
+  border-radius: $border-radius-sm;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  color: $color-text;
+  font-family: inherit;
+  outline: none;
+  transition: border-color $transition-fast;
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
+  }
+}
+
+.difficultyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 6px;
+}
+
+.diffBtn {
+  @include button-reset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  border-radius: $border-radius-sm;
+  border: 1px solid transparent;
+  background: rgba(0, 0, 0, 0.15);
+  transition: all $transition-fast;
+
+  &:hover {
+    background: $color-surface-hover;
+    border-color: $color-border;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary-light;
+    outline-offset: -2px;
+  }
+}
+
+.diffActive {
+  background: rgba($color-primary, 0.12);
+  border-color: $color-primary;
+  box-shadow: 0 0 12px rgba($color-primary, 0.1);
+}
+
+.diffEmoji {
+  font-size: 1.3rem;
+}
+
+.diffName {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.diffSize {
+  font-size: 0.65rem;
+  color: $color-text-muted;
+}
+
+.seriesSelect {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.seriesLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $color-text-muted;
+  white-space: nowrap;
+}
+
+.seriesOptions {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+
+.seriesBtn {
+  @include button-reset;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid transparent;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: $color-surface-hover;
+    border-color: $color-border;
+  }
+}
+
+.seriesActive {
+  background: rgba($color-warning, 0.12);
+  border-color: rgba($color-warning, 0.4);
+}
+
+.seriesNum {
+  font-size: 1.3rem;
+  font-weight: 800;
+
+  .seriesActive & {
+    color: $color-warning;
+  }
+}
+
+.seriesWins {
+  font-size: 0.65rem;
+  color: $color-text-muted;
+  font-weight: 600;
+}
+
+.startBtn {
+  @include button-reset;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, $color-primary-dark, $color-primary);
+  color: white;
+  border-radius: $border-radius;
+  font-size: 1.05rem;
+  font-weight: 700;
+  transition: all $transition-fast;
+  box-shadow: 0 4px 15px rgba($color-primary, 0.3);
+  margin-top: 4px;
+
+  &:hover {
+    background: linear-gradient(135deg, $color-primary, $color-primary-light);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba($color-primary, 0.4);
+  }
+
+  &:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 3px;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}

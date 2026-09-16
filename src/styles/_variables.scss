@@ -1,0 +1,43 @@
+// Colors - Rich dark theme
+$color-bg: #0a0e1a;
+$color-bg-gradient: linear-gradient(135deg, #0a0e1a 0%, #1a1040 50%, #0a0e1a 100%);
+$color-surface: #151a2d;
+$color-surface-light: #1e2440;
+$color-surface-hover: #252d4a;
+$color-primary: #7c6cf0;
+$color-primary-light: #9d8fff;
+$color-primary-dark: #5a4fd4;
+$color-accent: #f06292;
+$color-accent-light: #ff80ab;
+$color-text: #eaecf4;
+$color-text-muted: #7a7fa0;
+$color-success: #4dd0a8;
+$color-success-dark: #2a9d7e;
+$color-warning: #ffc107;
+$color-card-back-1: #3a2d7c;
+$color-card-back-2: #5a3d9e;
+$color-card-front: #1a1f35;
+$color-card-matched: #1a3530;
+$color-border: #2a3050;
+$color-border-light: #3a4070;
+
+// Sizing
+$card-gap: 12px;
+$border-radius: 14px;
+$border-radius-sm: 10px;
+$border-radius-lg: 20px;
+
+// Breakpoints
+$bp-mobile: 480px;
+$bp-tablet: 768px;
+
+// Transitions
+$flip-duration: 0.5s;
+$transition-fast: 0.2s ease;
+$transition-medium: 0.3s ease;
+
+// Shadows
+$shadow-card: 0 4px 15px rgba(0, 0, 0, 0.3);
+$shadow-card-hover: 0 6px 25px rgba(124, 108, 240, 0.2);
+$shadow-surface: 0 2px 20px rgba(0, 0, 0, 0.4);
+$shadow-glow: 0 0 20px rgba(124, 108, 240, 0.15);

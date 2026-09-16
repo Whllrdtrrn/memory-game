@@ -1,0 +1,187 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.statsBar {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $border-radius;
+  padding: 12px 16px;
+  box-shadow: $shadow-surface;
+
+  @include mobile {
+    padding: 10px 12px;
+    gap: 4px;
+  }
+}
+
+.stat {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: $border-radius-sm;
+
+  @include mobile {
+    gap: 6px;
+    padding: 2px 4px;
+  }
+}
+
+.bestStat {
+  background: rgba($color-warning, 0.08);
+  border: 1px solid rgba($color-warning, 0.15);
+}
+
+.icon {
+  font-size: 1.3rem;
+  line-height: 1;
+
+  @include mobile {
+    font-size: 1.1rem;
+  }
+}
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+
+  @include mobile {
+    font-size: 0.95rem;
+  }
+}
+
+.label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $color-text-muted;
+}
+
+.actionBar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.difficulty {
+  display: flex;
+  gap: 3px;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-sm;
+  padding: 4px;
+  box-shadow: $shadow-surface;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.diffBtn {
+  @include button-reset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: all $transition-fast;
+
+  @include mobile {
+    padding: 5px 8px;
+  }
+
+  &:hover {
+    background: $color-surface-hover;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary-light;
+    outline-offset: -2px;
+  }
+}
+
+.diffEmoji {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.diffLabel {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: $color-text-muted;
+  letter-spacing: 0.02em;
+}
+
+.active {
+  background: linear-gradient(135deg, $color-primary-dark, $color-primary);
+  box-shadow: 0 2px 8px rgba($color-primary, 0.3);
+
+  .diffLabel {
+    color: white;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, $color-primary, $color-primary-light);
+  }
+}
+
+.resetBtn {
+  @include button-reset;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-sm;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all $transition-fast;
+  box-shadow: $shadow-surface;
+
+  &:hover {
+    background: $color-surface-hover;
+    border-color: $color-accent;
+    color: $color-accent-light;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary-light;
+    outline-offset: 2px;
+  }
+}
+
+.resetIcon {
+  font-size: 1.1rem;
+  display: inline-block;
+  transition: transform 0.3s ease;
+
+  .resetBtn:hover & {
+    transform: rotate(-180deg);
+  }
+}

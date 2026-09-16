@@ -1,0 +1,29 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.boardWrapper {
+  width: 100%;
+  @include flex-center;
+  padding: 8px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), 1fr);
+  grid-template-rows: repeat(var(--grid-rows), 1fr);
+  gap: $card-gap;
+  width: 100%;
+  max-width: min(560px, 90vw);
+  background: rgba($color-surface, 0.5);
+  border: 1px solid $color-border;
+  border-radius: $border-radius-lg;
+  padding: 16px;
+  box-shadow: $shadow-glow;
+
+  @include mobile {
+    gap: 8px;
+    max-width: 95vw;
+    padding: 10px;
+    border-radius: $border-radius;
+  }
+}
