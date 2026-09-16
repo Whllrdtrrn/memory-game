@@ -39,7 +39,7 @@ No external state libraries — uses `useReducer` only.
 ## Run Locally
 
 ```bash
-git clone https://github.com/jonathandeocampo/memory-game.git
+git clone https://github.com/Whllrdtrrn/memory-game.git
 cd memory-game
 npm install
 npm run dev
@@ -55,4 +55,4 @@ npm run build
 
 ## Live Demo
 
-[https://memory-game-jonathandeocampo.vercel.app](https://memory-game-jonathandeocampo.vercel.app)
+[https://memory-game-whllrdtrrn.vercel.app](https://memory-game-whllrdtrrn.vercel.app)
