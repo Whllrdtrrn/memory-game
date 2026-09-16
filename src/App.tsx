@@ -186,8 +186,8 @@ export default function App() {
   return (
     <div className={styles.app}>
       <header className={styles.header}>
-        <span className={styles.logo}>🧠</span>
         <div>
+          <p className={styles.brand}>Whilo</p>
           <h1 className={styles.title}>Memory Match</h1>
           <p className={styles.subtitle}>Find all the matching pairs</p>
         </div>
@@ -243,7 +243,7 @@ export default function App() {
       )}
 
       <footer className={styles.footer}>
-        Made with ❤️ using React + TypeScript
+        Made by Whilo
       </footer>
 
       {status === 'won' && screen === 'game' && (

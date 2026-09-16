@@ -15,40 +15,58 @@
 
 .header {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 28px;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 24px;
 
   @include mobile {
-    margin-bottom: 18px;
-    gap: 10px;
+    margin-bottom: 16px;
   }
 }
 
-.logo {
-  font-size: 2.5rem;
+.brand {
+  font-size: clamp(2.2rem, 7vw, 3.5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #ffd54f;
+  -webkit-text-stroke: 1.5px #e65100;
+  text-shadow:
+    0 2px 0 #e65100,
+    0 4px 0 #bf360c,
+    0 6px 0 #8d1c06,
+    0 8px 15px rgba(0, 0, 0, 0.4);
+  transform: rotate(-3deg);
+  margin-bottom: -4px;
   line-height: 1;
-  filter: drop-shadow(0 2px 8px rgba($color-primary, 0.3));
 
   @include mobile {
-    font-size: 2rem;
+    -webkit-text-stroke: 1px #e65100;
   }
 }
 
 .title {
-  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-size: clamp(1rem, 3.5vw, 1.6rem);
   font-weight: 800;
-  background: linear-gradient(135deg, $color-primary-light, $color-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: $color-primary-light;
+  text-shadow:
+    0 1px 0 $color-primary-dark,
+    0 2px 0 rgba($color-primary-dark, 0.6),
+    0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: rotate(-1deg);
   line-height: 1.2;
 }
 
 .subtitle {
-  font-size: clamp(0.75rem, 2vw, 0.9rem);
+  font-size: clamp(0.65rem, 1.6vw, 0.8rem);
   color: $color-text-muted;
-  margin-top: 2px;
+  margin-top: 6px;
+  font-style: italic;
+  letter-spacing: 0.05em;
 }
 
 .settingsBtn {
